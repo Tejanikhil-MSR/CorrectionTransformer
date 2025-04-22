@@ -40,7 +40,7 @@ Tokenization is a critical step in training language models. The choice of token
 
 Generally the indic language tokenizers are trained for character level tokenization only for the following reasons : 
 - Indic languages are highly agglutinative, and subword segmentation can be noisy.
-- It's better to model individual aksharas (syllables) or character+diacritic units instead of full words or arbitrary subwords.
+- It's better to model individual `aksharas` (syllables) or `character+diacritic` units instead of full words or arbitrary subwords.
 
 ### 1. SentencePiece
 - This tools is developed by the Google using BPE(`BPE`) and Unigram language model(`ULM`) for creating custom tokenizer based on your dataset. Its simple to use tool for training a custom tokenizer based on the words or vocab present in your custom dataset. 
