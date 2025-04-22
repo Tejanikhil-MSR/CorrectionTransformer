@@ -26,7 +26,7 @@ Tokenization is a critical step in training language models. The choice of token
 - Subword tokenization offers a balanced approach, breaking words into frequently occurring subword units (e.g., Byte-Pair Encoding or SentencePiece).
 - It efficiently handles OOV words and avoids vocabulary explosion while maintaining reasonable perplexity.
 - Often used in models like BERT, GPT, and T5.
-- **Example**: "నమస్తే ప్రపంచం" → `['▁న', 'మ', 'స్తే', '▁ప్ర', 'పంచం']`.
+- ```**Example**: "నమస్తే ప్రపంచం" → `['▁న', 'మ', 'స్తే', '▁ప్ర', 'పంచం']`.```
 
 >> Since the errors are induced at the character and diacritic level, this implementation employs character level tokenization
 
