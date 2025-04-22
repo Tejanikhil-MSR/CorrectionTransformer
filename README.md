@@ -12,7 +12,7 @@ Tokenization is a critical step in training language models. The choice of token
 - It handles out-of-vocabulary (OOV) words efficiently since it learns from basic building blocks.
 - However, this method increases sequence length and often requires more model parameters to learn meaningful patterns, especially when training data is limited. This can result in higher perplexity during inference.
 ```python
-"నమస్తే ప్రపంచం" could be tokenized as `['_న', 'మ', 'స', '్', త, 'ే', '▁ప', '్', 'ర', 'ప', 'ం' 'చ', 'ం']`.
+"నమస్తే ప్రపంచం" → ['_న', 'మ', 'స', '్', 'త', 'ే', '▁ప', '్', 'ర', 'ప', 'ం' 'చ', 'ం'].
 ```
 
 ### 2. Word-level tokenization:
@@ -22,7 +22,7 @@ Tokenization is a critical step in training language models. The choice of token
 - Also, it requires a large and diverse vocabulary, leading to increased training data and time.
 - However, it typically yields lower perplexity during inference for seen words.
 ```python
-"నమస్తే" would be tokenized as ['_నమస్తే'].
+"నమస్తే" → ['_నమస్తే'].
 ```
 
 ### 3. Subword-level tokenization:
