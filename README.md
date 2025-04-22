@@ -3,164 +3,58 @@ This repository provides a lightweight, language‑aware post‑OCR correction m
 
 ---
 
-## Table of Contents
+## Tokenization
+Tokenization is a critical step in training language models. The choice of tokenization strategy impacts the model's ability to generate new words, handle out-of-vocabulary (OOV) terms, and affect the perplexity of generated text. Here’s a breakdown of different tokenization strategies:
 
-1. Features  
-2. Installation  
-3. Usage  
-4. Text Correction  
-   - Tokenization  
-     1. Character‑level  
-     2. Word‑level  
-     3. Subword‑level  
-   - Tools for Tokenization  
-     1. SentencePiece  
-     2. Existing Tokenizers  
-5. Configuration  
-6. Modes  
-7. Contributing  
-8. License
+### 1. Character-level tokenization:
 
----
+- Character-level tokenization breaks text into individual characters (including diacritics), enabling the model to generate multiple word or sentence formations.
+- It handles out-of-vocabulary (OOV) words efficiently since it learns from basic building blocks.
+- However, this method increases sequence length and often requires more model parameters to learn meaningful patterns, especially when training data is limited. This can result in higher perplexity during inference.
+- **Example**: "నమస్తే ప్రపంచం" could be tokenized as `['_న', 'మ', 'స', '్', త, 'ే', '▁ప', '్', 'ర', 'ప', 'ం' 'చ', 'ం']`.
 
-## Features
+### 2. Word-level tokenization:
 
-- **Diacritic Restoration**: Reattach missing or misplaced matras for accurate syllables.  
-- **Character‑Swap Corrections**: Fix visually similar glyph confusions using frequency‑based heuristics and a compact language model.  
-- **Missing‑Glyph Recovery**: Infer and reinstate dropped characters by analyzing surrounding context.  
-- **Contextual Homograph Disambiguation**: Use POS tags and a pronunciation lexicon to select correct phonetic forms.  
-- **Lightweight & Customizable**: Pure Python, minimal dependencies, configurable thresholds, and extendable lexicon.  
-- **Batch & Real‑Time**: Support for bulk processing and low‑latency single‑utterance correction.
+- Word-level tokenization splits the sentence based on whitespaces.
+- While this reduces sequence length and simplifies training, it struggles with OOV words, making it less flexible.
+- Also, it requires a large and diverse vocabulary, leading to increased training data and time.
+- However, it typically yields lower perplexity during inference for seen words.
+- **Example**: "నమస్తే" would be tokenized as `['_నమస్తే']`.
 
----
+### 3. Subword-level tokenization:
 
-## Installation
+- Subword tokenization offers a balanced approach, breaking words into frequently occurring subword units (e.g., Byte-Pair Encoding or SentencePiece).
+- It efficiently handles OOV words and avoids vocabulary explosion while maintaining reasonable perplexity.
+- Often used in models like BERT, GPT, and T5.
+- **Example**: "నమస్తే ప్రపంచం" → `['▁న', 'మ', 'స్తే', '▁ప్ర', 'పంచం']`.
 
-```bash
-pip install telugu-ocr-fixer
-```
+>> Since the errors are induced at the character and diacritic level, this implementation employs character level tokenization
 
----
+## Tools for tokenization
 
-## Usage
+Generally the indic language tokenizers are trained for character level tokenization only for the following reasons : 
+- Indic languages are highly agglutinative, and subword segmentation can be noisy.
+- It's better to model individual aksharas (syllables) or character+diacritic units instead of full words or arbitrary subwords.
 
-```python
-from telugu_ocr_fixer import Corrector
-
-fix = Corrector(config_path="config.yaml")
-cleaned_text = fix.process(raw_ocr_text)
-# Pass `cleaned_text` into your TTS engine
-```
-
----
-
-## Text Correction
-
-### Tokenization  
-Tokenization is critical for training language models. The chosen strategy affects word‑generation capability, handling of out‑of‑vocabulary (OOV) terms, and model perplexity. Below are three common strategies:
-
-#### 1. Character‑level tokenization  
-- **Description**: Splits text into individual characters (including diacritics).  
-- **Pros**:  
-  - Handles OOV words natively.  
-  - Enables model to generate novel word forms.  
-- **Cons**:  
-  - Longer sequences; more parameters needed.  
-  - Higher perplexity with limited data.  
-- **Example**:  
-  ```
-  "నమస్తే ప్రపంచం" →
-  ['న', 'మ', 'స', '్', 'త', 'ే', '▁', 'ప', '్', 'ర', 'ప', 'ం', 'చ', 'ం']
-  ```
-
-#### 2. Word‑level tokenization  
-- **Description**: Splits on whitespace.  
-- **Pros**:  
-  - Shorter sequences; simpler training.  
-  - Lower perplexity on seen words.  
-- **Cons**:  
-  - Poor OOV handling.  
-  - Large vocabulary requirements.  
-- **Example**:  
-  ```
-  "నమస్తే ప్రపంచం" → ['నమస్తే', 'ప్రపంచం']
-  ```
-
-#### 3. Subword‑level tokenization  
-- **Description**: Breaks words into frequent subword units (e.g., BPE, Unigram).  
-- **Pros**:  
-  - Handles OOV efficiently.  
-  - Balances vocabulary size and sequence length.  
-- **Cons**:  
-  - Can be noisy on agglutinative scripts.  
-- **Example**:  
-  ```
-  "నమస్తే ప్రపంచం" →
-  ['▁న', 'మ', 'స్తే', '▁ప్ర', 'పంచం']
-  ```
-
-> **Note:** Since OCR errors occur at the character/diacritic level, this implementation uses **character‑level tokenization**.
-
----
-
-### Tools for Tokenization
-
-Indic languages are agglutinative; modeling character+diacritic units (aksharas) is often preferable.
-
-#### 1. SentencePiece  
-Google’s tool supporting BPE and Unigram LM. Train on your Telugu corpus:
+### 1. SentencePiece
+- This tools is developed by the Google using BPE(`BPE`) and Unigram language model(`ULM`) for creating custom tokenizer based on your dataset. Its simple to use tool for training a custom tokenizer based on the words or vocab present in your custom dataset. 
 
 ```python
 import sentencepiece as spm
 
-# Train
-spm.SentencePieceTrainer.train(
-    input="telugu_corpus.txt",
-    model_prefix="telugu_model",
-    vocab_size=16000
-)
+# for training with custom datasets
+sp = spm.SentencePieceTrainer.train(input="telugu_corpus.txt", model_prefix="telugu_model", vocab_size=16000)
 
-# Encode
-sp = spm.SentencePieceProcessor(model_file="telugu_model.model")
-tokens = sp.encode("నమస్తే ప్రపంచం")
-print(tokens)  # ['▁న', 'మ', 'స్తే', '▁ప్ర', 'పంచం']
+tokens = sp.encode("నమస్తే ప్రపంచం") # gives ['▁న', 'మ', 'స్తే', '▁ప్ర', 'పంచం'] 
 ```
 
-#### 2. Existing Tokenizers  
-Hugging Face offers pretrained Indic tokenizers. Example:
+### 2. Existing tokenizers
+- There are already existing tokenizer that are training on larger vocabularies. Some of them include `ai4bharat/indic-bert`, `ai4bharat/IndicBart`, etc. 
 
 ```python
 from transformers import AutoTokenizer
-
 tokenizer = AutoTokenizer.from_pretrained("ai4bharat/indic-bert")
-print(tokenizer.tokenize("నమస్తే ప్రపంచం"))
+tokenizer.tokenize("నమస్తే ప్రపంచం")
 ```
 
-This work leverages the `ai4bharat/IndicBART` tokenizer.
-
----
-
-## Configuration
-
-Customize `config.yaml` to adjust error‑thresholds, add domain terms, or extend the lexicon.
-
----
-
-## Modes
-
-- **Batch Mode**: Process large document sets.  
-- **Real‑Time Mode**: Low‑latency correction for live applications.
-
----
-
-## Contributing
-
-1. Fork the repo  
-2. Create a feature branch  
-3. Submit a pull request  
-
----
-
-## License
-
-MIT License. See [LICENSE](LICENSE) for details.
+This works employs already existing tokenizer called `ai4bharat/IndicBART` from hugging face.
