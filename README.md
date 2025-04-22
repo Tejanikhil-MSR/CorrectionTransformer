@@ -11,7 +11,9 @@ Tokenization is a critical step in training language models. The choice of token
 - Character-level tokenization breaks text into individual characters (including diacritics), enabling the model to generate multiple word or sentence formations.
 - It handles out-of-vocabulary (OOV) words efficiently since it learns from basic building blocks.
 - However, this method increases sequence length and often requires more model parameters to learn meaningful patterns, especially when training data is limited. This can result in higher perplexity during inference.
-- **Example**: "నమస్తే ప్రపంచం" could be tokenized as `['_న', 'మ', 'స', '్', త, 'ే', '▁ప', '్', 'ర', 'ప', 'ం' 'చ', 'ం']`.
+```python
+"నమస్తే ప్రపంచం" could be tokenized as `['_న', 'మ', 'స', '్', త, 'ే', '▁ప', '్', 'ర', 'ప', 'ం' 'చ', 'ం']`.
+```
 
 ### 2. Word-level tokenization:
 
@@ -19,14 +21,18 @@ Tokenization is a critical step in training language models. The choice of token
 - While this reduces sequence length and simplifies training, it struggles with OOV words, making it less flexible.
 - Also, it requires a large and diverse vocabulary, leading to increased training data and time.
 - However, it typically yields lower perplexity during inference for seen words.
-- **Example**: "నమస్తే" would be tokenized as `['_నమస్తే']`.
+```python
+"నమస్తే" would be tokenized as ['_నమస్తే'].
+```
 
 ### 3. Subword-level tokenization:
 
 - Subword tokenization offers a balanced approach, breaking words into frequently occurring subword units (e.g., Byte-Pair Encoding or SentencePiece).
 - It efficiently handles OOV words and avoids vocabulary explosion while maintaining reasonable perplexity.
 - Often used in models like BERT, GPT, and T5.
-- ```**Example**: "నమస్తే ప్రపంచం" → `['▁న', 'మ', 'స్తే', '▁ప్ర', 'పంచం']`.```
+```python
+"నమస్తే ప్రపంచం" → ['▁న', 'మ', 'స్తే', '▁ప్ర', 'పంచం'].
+```
 
 >> Since the errors are induced at the character and diacritic level, this implementation employs character level tokenization
 
