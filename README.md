@@ -9,8 +9,8 @@ Tokenization is a critical step in training language models. The choice of token
 ### 1. Character-level tokenization:
 
 - Character-level tokenization breaks text into `individual characters` (including diacritics), enabling the model to generate multiple word or sentence formations.
-- It handles out-of-vocabulary (OOV) words efficiently since it learns from basic building blocks.
-- However, this method increases sequence length and often requires more model parameters to learn meaningful patterns, especially when training data is limited. This can result in higher perplexity during inference.
+- It handles `out-of-vocabulary` (OOV) words efficiently since it learns from basic building blocks.
+- However, this method increases sequence length and often requires more model parameters to learn meaningful patterns, especially when training data is limited. This can result in `higher perplexity` during inference.
 ```python
 "నమస్తే ప్రపంచం" → ['_న', 'మ', 'స', '్', 'త', 'ే', '▁ప', '్', 'ర', 'ప', 'ం' 'చ', 'ం'].
 ```
@@ -20,7 +20,7 @@ Tokenization is a critical step in training language models. The choice of token
 - Word-level tokenization splits the sentence based on `whitespaces`.
 - While this reduces sequence length and simplifies training, it struggles with OOV words, making it less flexible.
 - Also, it requires a large and diverse vocabulary, leading to increased training data and time.
-- However, it typically yields lower perplexity during inference for seen words.
+- However, it typically yields `lower perplexity` during inference for seen words.
 ```python
 "నమస్తే" → ['_నమస్తే'].
 ```
