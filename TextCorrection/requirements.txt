@@ -1,0 +1,12 @@
+pandas # for data manipulation
+numpy # for numerical operations
+
+transformers
+sentencepiece # for tokenization
+
+# Use the PyTorch index for CUDA 12.6 builds (make sure that torch version is compatible with the cuda version)
+--extra-index-url https://download.pytorch.org/whl/cu126
+
+torch
+torchvision
+torchaudio
