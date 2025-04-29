@@ -1,5 +1,6 @@
 pandas # for data manipulation
 numpy # for numerical operations
+matplotlib 
 
 transformers
 sentencepiece # for tokenization
